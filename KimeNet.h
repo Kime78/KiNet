@@ -6,13 +6,13 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <iostream>
 #include <cstring>
 
-#define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27015"
+#define KiNet_DEFAULT_BUFLEN 512
+#define KiNet_DEFAULT_PORT "27015"
 
 
 namespace kinet
@@ -23,7 +23,7 @@ namespace kinet
     namespace server {
         class Socket;
     }
-    class WSAData
+       class WSAData
     {
         private:
             static bool initialised;
@@ -60,7 +60,7 @@ namespace kinet
                 {
                     printf("getaddrinfo failed with error: %d\n", iResult);
                     WSACleanup();
-                    exit(0);
+
                 }
 
                     // Attempt to connect to an address until one succeeds
@@ -72,9 +72,9 @@ namespace kinet
                                            ptr->ai_protocol);
                     if (ConnectSocket == INVALID_SOCKET)
                     {
-                        printf("socket failed with error: %d\n", WSAGetLastError());
+                        printf("socket failed with error: %ld\n", WSAGetLastError());
                         WSACleanup();
-                        exit(0);
+
                     }
 
                     // Connect to server.
@@ -94,7 +94,7 @@ namespace kinet
             {
                 printf("Unable to connect to server!\n");
                 WSACleanup();
-                exit(0);
+
             }
         }
         void send(std::string msg)
@@ -103,21 +103,21 @@ namespace kinet
         }
         void receive(std::string& msg)
         {
-            msg.reserve(DEFAULT_BUFLEN); // msg.capacity() should == size
-            msg.resize(DEFAULT_BUFLEN); // forces the string to allocate memory and makes sure it's usable
+            msg.reserve(KiNet_DEFAULT_BUFLEN); // msg.capacity() should == size
+            msg.resize(KiNet_DEFAULT_BUFLEN); // forces the string to allocate memory and makes sure it's usable
             iResult = recv(ClientSocket, &msg[0], static_cast<int>(msg.capacity()), 0);
         }
         private:
            // static kinet::WSAData wsa;
-            WSADATA wsaData;
+            //WSADATA wsaData;
             SOCKET ConnectSocket = INVALID_SOCKET;
             struct addrinfo *result = NULL,
                                  *ptr = NULL,
                                   hints;
             char *sendbuf = new char[5000];
-            char recvbuf[DEFAULT_BUFLEN];
+            char recvbuf[KiNet_DEFAULT_BUFLEN];
             int iResult;
-            int recvbuflen = DEFAULT_BUFLEN;
+            int recvbuflen = KiNet_DEFAULT_BUFLEN;
             SOCKET ListenSocket = INVALID_SOCKET;
             SOCKET ClientSocket = INVALID_SOCKET;
         };
@@ -152,16 +152,16 @@ namespace kinet
                 if ( iResult != 0 ) {
                     printf("getaddrinfo failed with error: %d\n", iResult);
                     WSACleanup();
-                    return;
+
                 }
 
                 // Create a SOCKET for connecting to server
                 ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
                 if (ListenSocket == INVALID_SOCKET) {
-                    printf("socket failed with error: %d\n", WSAGetLastError());
+                    printf("socket failed with error: %ld\n", WSAGetLastError());
                     freeaddrinfo(result);
                     WSACleanup();
-                    return;
+
                 }
 
                 // Setup the TCP listening socket
@@ -171,13 +171,13 @@ namespace kinet
                     freeaddrinfo(result);
                     closesocket(ListenSocket);
                     WSACleanup();
-                    return;}
+                    }
                 iResult = listen(ListenSocket, SOMAXCONN);
                 if (iResult == SOCKET_ERROR) {
                     printf("listen failed with error: %d\n", WSAGetLastError());
                     closesocket(ListenSocket);
                     WSACleanup();
-                    return;
+
                     }
                 freeaddrinfo(result);
             }
@@ -188,7 +188,7 @@ namespace kinet
                     printf("accept failed with error: %d\n", WSAGetLastError());
                     closesocket(ListenSocket);
                     WSACleanup();
-                    return;
+
                 }
                 clients[clients_connected++].ss = ClientSocket;
                 clients[clients_connected].connected = true;
@@ -201,7 +201,7 @@ namespace kinet
 
             void send_all(std::string msg)
             {
-                for(unsigned i = 0; i< clients_connected;i++)
+                for(int i = 0; i< clients_connected;i++)
                     iResult = ::send(clients[i].ss, msg.c_str(), static_cast<int>(msg.size() + 1), 0 );
             }
             void send_to_id(std::string msg,int id)
@@ -210,8 +210,8 @@ namespace kinet
             }
             void receive_from_id(std::string& msg, int id)
             {
-                msg.reserve(DEFAULT_BUFLEN); // msg.capacity() should == size
-                msg.resize(DEFAULT_BUFLEN); // forces the string to allocate memory and makes sure it's usable
+                msg.reserve(KiNet_DEFAULT_BUFLEN); // msg.capacity() should == size
+                msg.resize(KiNet_DEFAULT_BUFLEN); // forces the string to allocate memory and makes sure it's usable
                 iResult = recv(clients[id].ss, &msg[0], static_cast<int>(msg.capacity()), 0);
             }
         private:
