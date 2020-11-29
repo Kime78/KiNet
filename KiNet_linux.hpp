@@ -57,7 +57,7 @@ namespace kinet
                     throw std::runtime_error("ERROR writing to socket");
             }
 
-            void recieve(std::string& message)
+            void receive(std::string& message)
             {
                 result = read(client, buffer, KINET_DEFAULT_BUFLEN);
                 if (result < 0) 
@@ -66,8 +66,8 @@ namespace kinet
                 }
                 else
                 {
-                    std::cout << result << '\n';     
-                    message.assign(buffer, 512);   
+                    //std::cout << result << '\n';     
+                    message.assign(buffer, strlen(buffer));   
                 }
             }
         private:
@@ -121,7 +121,8 @@ namespace kinet
 
             void send_all(std::string message)
             {
-                result = write(server, message.c_str(), KINET_DEFAULT_BUFLEN);
+                result = write(new_socket, message.c_str(), KINET_DEFAULT_BUFLEN);
+                //std::cout << result;
                 if(result < 0)
                 {
                     throw std::runtime_error("Error sending a message!");
@@ -130,10 +131,10 @@ namespace kinet
 
             //void send_privately();
 
-            void recieve(std::string& message)
+            void receive(std::string& message)
             {
                 bzero(buffer, KINET_DEFAULT_BUFLEN);
-                result = read(server, buffer, 511);
+                result = read(new_socket, buffer, 511);
                 if(result < 0)
                 {
                     //std::cout << buffer;
@@ -141,7 +142,7 @@ namespace kinet
                 }
                 else
                 {
-                    std::cout << buffer << '\n';   
+                    //std::cout << buffer << '\n';   
                     message.assign(buffer, 512);
                     //message = buffer;
                 }
@@ -188,7 +189,7 @@ int dummy_thicc_client(int argc, char *argv[])
     serv_addr.sin_port = htons(portno);
 
 
-    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
+    if (connect(sockfd,(struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
         perror("ERROR connecting");
 
     printf("Please enter the message: ");
