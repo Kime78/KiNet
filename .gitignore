@@ -3,3 +3,13 @@ server
 .vscode/settings.json
 client.cpp
 server.cpp
+CMakeCache.txt
+CMakeFiles/cmake.check_cache
+CMakeFiles/CMakeError.log
+CMakeFiles/CMakeOutput.log
+CMakeFiles/3.19.0-rc3/CMakeSystem.cmake
+CMakeLists.txt
+CMakeFiles/3.19.0-rc3/CompilerIdCXX/CMakeCXXCompilerId.cpp
+CMakeFiles/3.19.1/CMakeSystem.cmake
+CMakeFiles/3.19.1/CompilerIdC/CMakeCCompilerId.c
+CMakeFiles/3.19.1/CompilerIdCXX/CMakeCXXCompilerId.cpp
