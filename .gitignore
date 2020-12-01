@@ -1,8 +1,6 @@
 client
 server
 .vscode/settings.json
-client.cpp
-server.cpp
 CMakeCache.txt
 CMakeFiles/cmake.check_cache
 CMakeFiles/CMakeError.log

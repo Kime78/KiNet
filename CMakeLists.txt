@@ -6,6 +6,7 @@ add_library(libminisat STATIC
     KiNet.hpp
 )
 
-#add_executable(KiNet client.cpp)
 
-#add_executable(KiNet server.cpp)
+add_executable(Client client.cpp)
+
+add_executable(Server server.cpp)
