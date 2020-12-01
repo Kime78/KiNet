@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(KiNet)
+project(KiNet CXX)
 
 add_library(libminisat STATIC
     KiNet.hpp
