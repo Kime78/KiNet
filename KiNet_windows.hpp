@@ -212,7 +212,7 @@ namespace kinet
                     }
                 freeaddrinfo(result);
             }
-            void accept()
+            int accept()
             {
                 ClientSocket = ::accept(ListenSocket, NULL, NULL);
                 if (ClientSocket == INVALID_SOCKET) {
@@ -225,6 +225,8 @@ namespace kinet
                 }
                 clients[clients_connected++].ss = ClientSocket;
                 clients[clients_connected].connected = true;
+
+                return clients_connected;
             }
 
             void disconnect(int id)
@@ -234,15 +236,14 @@ namespace kinet
 
             void send_all(std::string msg)
             {
-                for(int i = 0; i< clients_connected;i++)
+                for(int i = 0; i < clients_connected; i++)
                     iResult = ::send(clients[i].ss, msg.c_str(), static_cast<int>(msg.size() + 1), 0 );
             }
             void send_to_id(std::string msg,int id)
             {
                 iResult = ::send(clients[id].ss, msg.c_str(), static_cast<int>(msg.size() + 1), 0 );
             }
-            void receive_from_id(std::string& msg, int id)
-            {
+            void receive_from_id(std::string& msg, int id) {
                 msg.reserve(KiNet_DEFAULT_BUFLEN); // msg.capacity() should == size
                 msg.resize(KiNet_DEFAULT_BUFLEN); // forces the string to allocate memory and makes sure it's usable
                 iResult = recv(clients[id].ss, &msg[0], static_cast<int>(msg.capacity()), 0);
